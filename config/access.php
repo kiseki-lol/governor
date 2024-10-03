@@ -1,0 +1,4 @@
+<?php
+
+$pingKey = "";
+$announceKey = "";
