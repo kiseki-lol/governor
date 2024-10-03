@@ -9,6 +9,8 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/config/assets.php');
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/models.php');
 
+include_once($_SERVER['DOCUMENT_ROOT'] . '/config/catalog.php');
+
 $router = new \Bramus\Router\Router();
 $active_servers = [];
 
@@ -43,6 +45,8 @@ $router->get('/Setting/QuietGet/{path}', function($path)
 
 $router->get('/catalog-assets', function()
 {
+    global $wearableAssets;
+    
     header("Access-Control-Allow-Origin: qrc:");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -50,18 +54,8 @@ $router->get('/catalog-assets', function()
     // should worry about category choice later
     // temp response
 
-    $response = (object) [
-        Asset::create([
-            'name' => 'cap',
-            'description' => 'is cap',
-            'author' => 'ro blocks',
-            'assetId' => 417457461,
-            'version' => -1,
-        ]),
-    ];
-
     header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($response);
+    echo json_encode(value: $wearableAssets); // check config/catalog.php
     return;
 });
 
