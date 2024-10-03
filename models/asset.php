@@ -42,13 +42,21 @@ class Asset
 
     public function getThumbnailUrl(bool $shouldCache = false): string
     {
-        $request = file_get_contents("https://thumbnails.roblox.com/v1/assets?assetIds=" . $this->assetId . "&returnPolicy=PlaceHolder&size=420x420&format=Png&isCircular=false");
+        $request = file_get_contents("https://thumbnails.roblox.com/v1/assets?assetIds=" . $this->assetId . "&returnPolicy=PlaceHolder&size=420x420&format=Jpeg&isCircular=false");
         if (!$this->isJson($request)) {
             return 'failed to get thumbnail url';
         }
 
         $request = json_decode($request, true);
-        return $request['data'][0]['imageUrl'] ?? 'failed to get thumbnail url';
+        $url = $request['data'][0]['imageUrl'];
+        if ($url == null)
+            return 'failed to get thumbnail url';
+
+        $image = file_get_contents($url);
+        $image = base64_encode($image);
+
+        // have to do this to account for cors stuff but planning to make it so it caches locally
+        return 'data:image/jpeg;base64,' . $image;
     }
 
     // make helpers.php

@@ -43,6 +43,10 @@ $router->get('/Setting/QuietGet/{path}', function($path)
 
 $router->get('/catalog-assets', function()
 {
+    header("Access-Control-Allow-Origin: qrc:");
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
     // should worry about category choice later
     // temp response
 
