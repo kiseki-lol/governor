@@ -6,10 +6,11 @@ class Asset
     public string $description;
     public string $author;
     public string $assetThumbnail;
+    public AssetType $assetType;
     public int $assetId;
     public int $version;
 
-    public function __construct(string $name, string $description, string $author, int $assetId, string $assetThumbnail, int $version)
+    public function __construct(string $name, string $description, string $author, int $assetId, string $assetThumbnail, int $version, AssetType $assetType)
     {
         $this->name = $name;
         $this->description = $description;
@@ -17,6 +18,7 @@ class Asset
         $this->assetId = $assetId;
         $this->assetThumbnail = $assetThumbnail;
         $this->version = $version;
+        $this->assetType = $assetType;
     }
 
     public static function create(array $data): Asset
@@ -27,7 +29,8 @@ class Asset
             $data['author'],
             $data['assetId'],
             '', // Temporary empty thumbnail to initialize
-            $data['version']
+            $data['version'],
+            $data['assetType'],
         ))->getThumbnail(true) : '';
 
         return new self(
@@ -36,7 +39,8 @@ class Asset
             $data['author'],
             $data['assetId'],
             $thumbnailUrl,
-            $data['version']
+            $data['version'],
+            $data['assetType']
         );
     }
 
@@ -57,7 +61,7 @@ class Asset
         }
 
         $request = file_get_contents("https://thumbnails.roblox.com/v1/assets?assetIds=" . $this->assetId . "&returnPolicy=PlaceHolder&size=420x420&format=Jpeg&isCircular=false");
-        if (!$this->isJson($request)) {
+        if (!isJson($request)) {
             return 'failed to get thumbnail url';
         }
 
@@ -78,11 +82,5 @@ class Asset
 
         // have to do this to account for cors stuff but planning to make it so it caches locally
         return 'data:image/jpeg;base64,' . $image;
-    }
-
-    // make helpers.php
-    private function isJson($string) {
-        json_decode($string);
-        return json_last_error() === JSON_ERROR_NONE;
     }
 }

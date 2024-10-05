@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ERROR | E_PARSE);
+// error_reporting(E_ERROR | E_PARSE);
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -7,7 +7,9 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/config/access.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/config/base.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/config/assets.php');
 
+include_once($_SERVER['DOCUMENT_ROOT'] . '/helpers.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/models.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/enums.php');
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/config/catalog.php');
 
@@ -50,6 +52,20 @@ $router->get('/catalog-assets', function()
     header("Access-Control-Allow-Origin: qrc:");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+    if (!isset($_GET['type']))
+    {
+        $category = AssetType::HAT;
+    }
+    else
+    {
+        $category = AssetType::from($_GET['type']);
+    }
+
+    // https://stackoverflow.com/questions/7826358/how-to-filter-an-array-of-object
+    $wearableAssets = array_filter($wearableAssets, function($obj) use($category) {
+        return $obj->assetType == $category;
+    });
 
     // should worry about category choice later
     // temp response
