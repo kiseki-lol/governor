@@ -44,6 +44,14 @@ $wearableAssets = [
         'assetType' => AssetType::PANTS,
     ]),
     Asset::create([
+        'name' => 'pants t hat should be jeans',
+        'description' => 'but they point to a gear!',
+        'author' => 'ro blocks',
+        'assetId' => 8645397678,
+        'version' => -1,
+        'assetType' => AssetType::PANTS,
+    ]),
+    Asset::create([
         'name' => 'domo shirt',
         'description' => 'is hat!',
         'author' => 'ro blocks',
@@ -58,5 +66,21 @@ $wearableAssets = [
         'assetId' => 106779740,
         'version' => -1,
         'assetType' => AssetType::SHIRT,
+    ]),
+    Asset::create([
+        'name' => 'stick battle!!!.png',
+        'description' => 'This item is available in your inventory.',
+        'author' => 'kirby0628',
+        'assetId' => 1576264,
+        'version' => -1,
+        'assetType' => AssetType::TSHIRT,
+    ]),
+    Asset::create([
+        'name' => 'Awkward....',
+        'description' => 'Wow... that was awkward.',
+        'author' => 'roblox',
+        'assetId' => 23932048,
+        'version' => -1,
+        'assetType' => AssetType::FACE,
     ]),
 ];
