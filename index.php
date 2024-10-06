@@ -1,6 +1,4 @@
 <?php
-// error_reporting(E_ERROR | E_PARSE);
-
 require __DIR__ . '/vendor/autoload.php';
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/config/access.php');
@@ -22,16 +20,18 @@ $router->get('/asset/', function()
 	if (!isset($_GET['id'])) 
 		die();
 
-	if (!ctype_digit(text: $_GET['id']))
-		die();
-	
+    if ((int)$_GET['id'] < 0)
+        $assetId = reverseOverflow((int)$_GET['id']);
+	else
+        $assetId = (int)$_GET['id'];
+
     // check if stored locally
-    $file = $_SERVER['DOCUMENT_ROOT'] . '/assets/' . $_GET['id'];
+    $file = $_SERVER['DOCUMENT_ROOT'] . '/assets/' . $assetId;
 
     if (file_exists($file))
         die(file_get_contents($file));
 
-	$asset = 'https://assetdelivery.roblox.com/v1/asset/?id=' . $_GET['id'];
+	$asset = 'https://assetdelivery.roblox.com/v1/asset/?id=' . $assetId;
 	
 	header("Location: " . $asset);
 	die();
