@@ -9,14 +9,13 @@ function isJson($string) : bool {
 function reverseOverflow(int $overflowedValue) : int {
     // 2^32
     $maxUint32 = 4294967296;
+    $originalValue = $overflowedValue;
 
-    // add 2^32 to reverse the overflow
-    if ($overflowedValue < 0) {
-        // multiple overflow
+    if ($overflowedValue > 0 && $overflowedValue < $maxUint32 / 2) {
         $originalValue = $overflowedValue + 2 * $maxUint32;
-    } else {
-        // no correction
-        $originalValue = $overflowedValue;
+    } 
+    else if ($overflowedValue < 0) {
+        $originalValue = $overflowedValue + 2 * $maxUint32;
     }
 
     return $originalValue;

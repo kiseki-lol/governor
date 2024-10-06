@@ -36,10 +36,10 @@ $wearableAssets = [
         'assetType' => AssetType::HAT,
     ]),
     Asset::create([
-        'name' => 'Domo pants',
-        'description' => 'is hat!',
+        'name' => 'domo jeans',
+        'description' => 'is jeans!',
         'author' => 'ro blocks',
-        'assetId' => 11110244388,
+        'assetId' => 7581780596,
         'version' => -1,
         'assetType' => AssetType::PANTS,
     ]),
