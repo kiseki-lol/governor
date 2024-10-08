@@ -122,6 +122,8 @@ $router->post('/universes/validate-place-join', function()
 $router->get('/v1.1/avatar-fetch/', function() 
 {
     global $baseUrl;
+    global $wearableAssets;
+    
     if (!isset($_GET['json']))
         die();
 
@@ -132,7 +134,9 @@ $router->get('/v1.1/avatar-fetch/', function()
     $assets = [];
 
     foreach($json as $i => $asset) {
-        array_push($assets, $baseUrl . 'asset/?id=' . $asset->assetId);
+        if (in_array($asset->assetId, array_column($wearableAssets, 'assetId'))) {
+            array_push($assets, $baseUrl . 'asset/?id=' . $asset->assetId);
+        }
     }
 
     die(implode(';', $assets));
