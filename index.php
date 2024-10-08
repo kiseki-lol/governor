@@ -114,6 +114,30 @@ $router->get('/ping', function()
     echo json_encode($response);
 });
 
+$router->post('/universes/validate-place-join', function() 
+{
+    die('true');
+});
+
+$router->get('/v1.1/avatar-fetch/', function() 
+{
+    global $baseUrl;
+    if (!isset($_GET['json']))
+        die();
+
+    if (!isJson(urldecode($_GET['json'])))
+        die();
+
+    $json = json_decode(urldecode($_GET['json']));
+    $assets = [];
+
+    foreach($json as $i => $asset) {
+        array_push($assets, $baseUrl . 'asset/?id=' . $asset->assetId);
+    }
+
+    die(implode(';', $assets));
+});
+
 $router->post('/announce', function() 
 {
     global $active_servers;
