@@ -1,17 +1,17 @@
 <?php
 
 class ActiveServer {
-    public $server_name;
-    public $host;
-    public $machine_address;
-    public $player_count;
-    public $player_limit;
-    public $server_port;
-    public $server_motd_preview;
-    public $server_motd_content;
-    public $custom_password;
-    public $ttl;
-    public $authorization;
+    public string $server_name;
+    public string $host;
+    public string $machine_address;
+    public int $player_count;
+    public int $player_limit;
+    public int $server_port;
+    public string $server_motd_preview;
+    public string $server_motd_content;
+    public bool $custom_password;
+    public int $ttl;
+    public string $authorization;
 
     public function __construct() {
         $this->server_name = "";
