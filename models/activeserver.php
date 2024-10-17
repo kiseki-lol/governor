@@ -12,6 +12,7 @@ class ActiveServer {
     public bool $custom_password;
     public int $ttl;
     public string $authorization;
+    public int $virtual_version;
 
     public function __construct() {
         $this->server_name = "";
@@ -25,6 +26,7 @@ class ActiveServer {
         $this->custom_password = false;
         $this->ttl = 0;
         $this->authorization = "";
+        $this->virtual_version = 0;
     }
 
     public function fromJson($json) {
@@ -66,7 +68,11 @@ class ActiveServer {
             error_log("Missing Host");
             return false;
         }
-
+        if (!isset($data["VirtualVersion"])) {
+            error_log("Missing VirtualVersion");
+            return false;
+        }
+        
         $this->server_name = $data["ServerName"];
         $this->server_motd_content = $data["MotdContent"];
         $this->server_motd_preview = $data["MotdPreview"];
@@ -77,6 +83,7 @@ class ActiveServer {
         $this->ttl = time() + 120; // 2-minute TTL
         $this->host = $data["Host"];
         $this->server_port = $data["ServerPort"];
+        $this->virtual_version = $data["VirtualVersion"];
 
         return true;
     }
@@ -91,6 +98,7 @@ class ActiveServer {
             "CustomPassword" => $this->custom_password,
             "MachineAddress" => $this->machine_address,
             "ServerPort" => $this->server_port,
+            "VirtualVersion" => $this->virtual_version,
             "Host" => $this->host,
             "GUID" => "x"
         ];

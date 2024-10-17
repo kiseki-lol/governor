@@ -1,0 +1,1 @@
+ALTER TABLE servers ADD virtual_version INTEGER DEFAULT (0);

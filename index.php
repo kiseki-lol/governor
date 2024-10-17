@@ -130,7 +130,8 @@ $router->get('/ping', function()
                 "server_motd_content" => $server["server_motd_content"],
                 "custom_password" => $server["custom_password"],
                 "ttl" => $server["ttl"],
-                "authorization_thing" => $server["authorization_thing"]
+                "authorization_thing" => $server["authorization_thing"],
+                "virtual_version" => $server["virtual_version"],
             ];
         }
     }
@@ -219,7 +220,7 @@ $router->post('/announce', function()
         $result->execute([$aserv->machine_address]);
         
         if ($result->fetchColumn() == 0) {
-            $stmt = $connection->prepare("INSERT INTO servers (server_name, host, machine_address, player_count, player_limit, server_port, server_motd_preview, server_motd_content, custom_password, ttl, authorization_thing) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $connection->prepare("INSERT INTO servers (server_name, host, machine_address, player_count, player_limit, server_port, server_motd_preview, server_motd_content, custom_password, ttl, authorization_thing, virtual_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
                 $aserv->server_name,
                 $aserv->host,
@@ -231,7 +232,8 @@ $router->post('/announce', function()
                 $aserv->server_motd_content,
                 $aserv->custom_password,
                 $aserv->ttl,
-                $aserv->authorization
+                $aserv->authorization,
+                $aserv->virtual_version,
             ]);
             $stmt = null;
         } else {
