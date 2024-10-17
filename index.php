@@ -115,23 +115,27 @@ $router->get('/ping', function()
     if ($canSeeServers) {
         $currentTimestamp = time();
 
-        $stmt = $connection->prepare("SELECT * FROM servers WHERE ttl > ?");
-        $stmt->execute([$currentTimestamp]);
+        try {
+            $stmt = $connection->prepare("SELECT * FROM servers WHERE ttl > ?");
+            $stmt->execute([$currentTimestamp]);
 
-        while ($server = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $response["ActiveServers"][] = [
-                "server_name" => $server["server_name"],
-                "host" => $server["host"],
-                "machine_address" => $server["machine_address"],
-                "player_count" => $server["player_count"],
-                "player_limit" => $server["player_limit"],
-                "server_port" => $server["server_port"],
-                "server_motd_preview" => $server["server_motd_preview"],
-                "server_motd_content" => $server["server_motd_content"],
-                "custom_password" => $server["custom_password"],
-                "ttl" => $server["ttl"],
-                "authorization_thing" => $server["authorization_thing"]
-            ];
+            while ($server = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $response["ActiveServers"][] = [
+                    "server_name" => $server["server_name"],
+                    "host" => $server["host"],
+                    "machine_address" => $server["machine_address"],
+                    "player_count" => $server["player_count"],
+                    "player_limit" => $server["player_limit"],
+                    "server_port" => $server["server_port"],
+                    "server_motd_preview" => $server["server_motd_preview"],
+                    "server_motd_content" => $server["server_motd_content"],
+                    "custom_password" => $server["custom_password"],
+                    "ttl" => $server["ttl"],
+                    "authorization_thing" => $server["authorization_thing"]
+                ];
+            }
+        } catch (PDOException $exception) {
+            error_log('Caught PDOException (related to DB): ' .  $exception->getMessage());
         }
     }
 
