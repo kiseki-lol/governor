@@ -8,3 +8,4 @@ composer.phar
 # assets, cache
 assets/*
 cache/*
+aya.db
