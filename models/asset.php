@@ -46,9 +46,10 @@ class Asset
 
     public function getThumbnail(bool $shouldUseCache = false): string
     {
+        $cacheDir = $_SERVER['DOCUMENT_ROOT'] . '/cache/';
+        $cachePath = $cacheDir . $this->assetId;
         if ($shouldUseCache)
         {
-            $cachePath = $_SERVER['DOCUMENT_ROOT'] . '/cache/' . $this->assetId;
             if (file_exists($cachePath))
             {
                 // should be png
@@ -74,7 +75,10 @@ class Asset
 
         if ($shouldUseCache)
         {
-            $cachePath = $_SERVER['DOCUMENT_ROOT'] . '/cache/' . $this->assetId;
+            if (!is_dir($cacheDir))
+            {
+                mkdir($cacheDir);
+            }
             file_put_contents($cachePath, $image);
         }
 
