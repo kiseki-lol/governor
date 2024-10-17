@@ -238,9 +238,12 @@ $router->post('/announce', function()
             $stmt = null;
         } else {
             $newTTL = time() + (2 * 60);
-            $stmt = $connection->prepare("UPDATE servers SET ttl = ? WHERE machine_address = ?");
-            $stmt->execute([$newTTL, $aserv->machine_address]);
+            $stmt = $connection->prepare("UPDATE servers SET ttl = ?, player_count = ? WHERE machine_address = ?");
+            $stmt->execute([$newTTL, $aserv->player_count, $aserv->machine_address]);
             $stmt = null;
+    error_log("UPDATING DATA");
+    error_log(json_encode($aserv));
+
         }        
 
         http_response_code(200);
