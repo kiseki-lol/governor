@@ -204,14 +204,6 @@ $wearableAssets = [
         'assetType' => AssetType::HAT,
     ]),
     Asset::create([
-        'name' => 'Al Capwn',
-        'description' => 'He\'ll make sure you sleep with the fishes. And he isn\'t talking about going on a fishing trip...',
-        'author' => 'Roblox',
-        'assetId' => 24123795,
-        'version' => -1,
-        'assetType' => AssetType::HAT,
-    ]),
-    Asset::create([
         'name' => 'Auburn Scene Hair',
         'description' => 'My hair is art, dude.',
         'author' => 'roblox',
@@ -322,5 +314,21 @@ $wearableAssets = [
         'assetId' => 21635565,
         'version' => -1,
         'assetType' => AssetType::FACE,
+    ]),
+    Asset::create([
+        'name' => 'Purple Banded Top Hat Shirt',
+        'description' => 'ORIGINAL by "bunny"',
+        'author' => 'Facbook11111',
+        'assetId' => 12458674304,
+        'version' => -1,
+        'assetType' => AssetType::SHIRT,
+    ]),
+    Asset::create([
+        'name' => 'Purple Banded Top Hat Pants',
+        'description' => 'ORIGINAL by "bunny"',
+        'author' => 'Facbook11111',
+        'assetId' => 16385615702,
+        'version' => -1,
+        'assetType' => AssetType::PANTS,
     ]),
 ];
