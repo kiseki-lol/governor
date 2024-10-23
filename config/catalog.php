@@ -331,4 +331,20 @@ $wearableAssets = [
         'version' => -1,
         'assetType' => AssetType::PANTS,
     ]),
+    Asset::create([
+        'name' => 'No Z',
+        'description' => 'Do you want to know why the slow kids still don\'t get it? Mind your own business.',
+        'author' => 'Roblox',
+        'assetId' => 14405720,
+        'version' => -1,
+        'assetType' => AssetType::FACE,
+    ]),
+    Asset::create([
+        'name' => '¬_¬',
+        'description' => '¬_¬',
+        'author' => 'roblox',
+        'assetId' => 13038375,
+        'version' => -1,
+        'assetType' => AssetType::FACE,
+    ]),
 ];

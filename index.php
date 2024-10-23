@@ -146,25 +146,72 @@ $router->post('/universes/validate-place-join', function()
     die('true');
 });
 
+$router->get('/asset/bodycolors.ashx', function() 
+{
+    if (!isset($_GET['colors']))
+        die();
+
+    if (!isJson(urldecode($_GET['colors'])))
+        die();
+
+    $colors = json_decode(urldecode($_GET['colors']));
+    die('<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+            <External>null</External>
+            <External>nil</External>
+            <Item class="BodyColors">
+                <Properties>
+                    <int name="HeadColor">' . (int)$colors[0]->brickColor . '</int>
+                    <int name="LeftArmColor">' . (int)$colors[2]->brickColor . '</int>
+                    <int name="LeftLegColor">' . (int)$colors[4]->brickColor . '</int>
+                    <string name="Name">Body Colors</string>
+                    <int name="RightArmColor">' . (int)$colors[3]->brickColor . '</int>
+                    <int name="RightLegColor">' . (int)$colors[5]->brickColor . '</int>
+                    <int name="TorsoColor">' . (int)$colors[1]->brickColor . '</int>
+                    <bool name="archivable">true</bool>
+                </Properties>
+            </Item>
+        </roblox>');
+});
+
 $router->get('/v1.1/avatar-fetch/', function() 
 {
     global $baseUrl;
     global $wearableAssets;
     
+    error_log(json_encode($_GET));
+
     if (!isset($_GET['json']))
         die();
 
+    error_log("AAA");
+
+    if (!isset($_GET['body']))
+        die();
+    error_log("AAAA");
+
+    if (!isset($_GET['userid']))
+        die();
+    error_log("AAAAA");
+
     if (!isJson(urldecode($_GET['json'])))
         die();
+    error_log("AAAAAA");
 
+    if (!isJson(urldecode($_GET['body'])))
+        die();
+    error_log("AAAAAAA");
+
+    $colors = json_decode(urldecode($_GET['body']));
     $json = json_decode(urldecode($_GET['json']));
-    $assets = [];
+    $assets = [$baseUrl . 'asset/bodycolors.ashx?colors=' . urlencode($_GET['body'])];
 
     foreach($json as $i => $asset) {
         if (in_array($asset->assetId, array_column($wearableAssets, 'assetId'))) {
             array_push($assets, $baseUrl . 'asset/?id=' . $asset->assetId);
         }
     }
+
+    error_log( implode(';', $assets));
 
     die(implode(';', $assets));
 });
