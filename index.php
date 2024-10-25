@@ -285,8 +285,8 @@ $router->post('/announce', function()
             $stmt = null;
         } else {
             $newTTL = time() + (2 * 60);
-            $stmt = $connection->prepare("UPDATE servers SET ttl = ?, player_count = ?, virtual_version = ? WHERE machine_address = ?");
-            $stmt->execute([$newTTL, $aserv->player_count, $aserv->virtual_version, $aserv->machine_address]);
+            $stmt = $connection->prepare("UPDATE servers SET ttl = ?, player_count = ?, virtual_version = ?, server_motd_preview = ?, server_motd_content = ?, server_name = ? WHERE machine_address = ?");
+            $stmt->execute([$newTTL, $aserv->player_count, $aserv->virtual_version, $aserv->server_motd_preview, $aserv->server_motd_content, $aserv->server_name, $aserv->machine_address]);
             $stmt = null;
     error_log("UPDATING DATA");
     error_log(json_encode($aserv));
