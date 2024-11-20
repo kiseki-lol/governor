@@ -50,7 +50,7 @@ $router->get('/catalog-assets', function()
 {
     global $wearableAssets;
     
-    header("Access-Control-Allow-Origin: qrc:");
+    header('Access-Control-Allow-Origin: *');
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -173,12 +173,17 @@ $router->get('/asset/bodycolors.ashx', function()
         </roblox>');
 });
 
-$router->get('/v1.1/avatar-fetch/', function() 
+$router->all('/avatar-fetch', function() 
 {
     global $baseUrl;
     global $wearableAssets;
-    
+
+    error_log("/v1.1/avatar-fetch/");
+
     error_log(json_encode($_GET));
+    // 
+
+    error_log("AA");
 
     if (!isset($_GET['json']))
         die();
@@ -199,15 +204,14 @@ $router->get('/v1.1/avatar-fetch/', function()
 
     if (!isJson(urldecode($_GET['body'])))
         die();
-    error_log("AAAAAAA");
-
+        
     $colors = json_decode(urldecode($_GET['body']));
     $json = json_decode(urldecode($_GET['json']));
-    $assets = [$baseUrl . 'asset/bodycolors.ashx?colors=' . urlencode($_GET['body'])];
+    $assets = []; // [$baseUrl . 'asset/bodycolors.ashx?colors=' . urlencode($_GET['body'])];
 
     foreach($json as $i => $asset) {
-        if (in_array($asset->assetId, array_column($wearableAssets, 'assetId'))) {
-            array_push($assets, $baseUrl . 'asset/?id=' . $asset->assetId);
+        if (in_array($asset, array_column($wearableAssets, 'assetId'))) {
+            array_push($assets, $baseUrl . 'asset/?id=' . $asset);
         }
     }
 
