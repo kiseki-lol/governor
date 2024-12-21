@@ -85,6 +85,10 @@ class ActiveServer {
         $this->server_port = $data["ServerPort"];
         $this->virtual_version = $data["VirtualVersion"];
 
+        if(isset($data["MachineAddress"])) {
+            $this->machine_address = $data["MachineAddress"];
+        }
+
         return true;
     }
 

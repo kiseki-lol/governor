@@ -263,7 +263,8 @@ $router->post('/announce', function()
         }
         error_log("GOOD DATA 2");
 
-        $aserv->machine_address = $_SERVER['REMOTE_ADDR'];
+        if($aserv->machine_address == "")
+            $aserv->machine_address = $_SERVER['REMOTE_ADDR'];
 
         $active_servers[$_SERVER['REMOTE_ADDR']] = $aserv;
 
