@@ -15,9 +15,6 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/config/catalog.php');
 $router = new \Bramus\Router\Router();
 $active_servers = [];
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
 // routes
 $router->get('/asset/', function() 
 {
@@ -36,63 +33,9 @@ $router->get('/asset/', function()
         die(file_get_contents($file));
 
 	$asset = 'https://assetdelivery.roblox.com/v1/asset/?id=' . $assetId;
-	// header("Location: " . $asset);
 	
-    // new roblosecurity bullshit
-    $robloSecurity = $_ENV['ROBLOSECURITY'];
-    $cookie = sprintf(".ROBLOSECURITY: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_%s", $robloSecurity);
-
-    try {
-        $ch = curl_init();
-
-        if ($ch === false) {
-            throw new Exception('failed to initialize');
-        }
-
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $asset,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_COOKIE => ".ROBLOSECURITY={$robloSecurity}",
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HEADER => true,
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
-            CURLOPT_TIMEOUT => 20,
-        ]);
-
-        $response = curl_exec($ch);
-        if ($response === false) {
-            throw new Exception(curl_error($ch), curl_errno($ch));
-        }
-
-        // Check HTTP return code, too; might be something else than 200
-        // $httpReturnCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $body = substr($response, $headerSize);
-
-        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $body = substr($response, $headerSize);
-
-        curl_close($ch);
-
-        header("Content-Type: text/plain");
-        echo $body;
-    } 
-    catch(Exception $e) 
-    {
-        trigger_error(sprintf(
-            'Curl failed with error #%d: %s',
-            $e->getCode(), $e->getMessage()),
-            E_USER_ERROR);
-    } 
-    finally 
-    {
-        if (is_resource($ch)) {
-            curl_close($ch);
-        }
-    }
-
-    die();
+	header("Location: " . $asset);
+	die();
 });
 
 $router->get('/Setting/QuietGet/{path}', function($path) 
