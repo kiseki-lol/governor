@@ -50,7 +50,7 @@ $router->get('/catalog-assets', function()
 {
     global $wearableAssets;
     
-    header("Access-Control-Allow-Origin: qrc:");
+    header('Access-Control-Allow-Origin: *');
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -115,27 +115,24 @@ $router->get('/ping', function()
     if ($canSeeServers) {
         $currentTimestamp = time();
 
-        try {
-            $stmt = $connection->prepare("SELECT * FROM servers WHERE ttl > ?");
-            $stmt->execute([$currentTimestamp]);
+        $stmt = $connection->prepare("SELECT * FROM servers WHERE ttl > ?");
+        $stmt->execute([$currentTimestamp]);
 
-            while ($server = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $response["ActiveServers"][] = [
-                    "server_name" => $server["server_name"],
-                    "host" => $server["host"],
-                    "machine_address" => $server["machine_address"],
-                    "player_count" => $server["player_count"],
-                    "player_limit" => $server["player_limit"],
-                    "server_port" => $server["server_port"],
-                    "server_motd_preview" => $server["server_motd_preview"],
-                    "server_motd_content" => $server["server_motd_content"],
-                    "custom_password" => $server["custom_password"],
-                    "ttl" => $server["ttl"],
-                    "authorization_thing" => $server["authorization_thing"]
-                ];
-            }
-        } catch (PDOException $exception) {
-            error_log('Caught PDOException (related to DB): ' .  $exception->getMessage());
+        while ($server = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $response["ActiveServers"][] = [
+                "server_name" => $server["server_name"],
+                "host" => $server["host"],
+                "machine_address" => $server["machine_address"],
+                "player_count" => $server["player_count"],
+                "player_limit" => $server["player_limit"],
+                "server_port" => $server["server_port"],
+                "server_motd_preview" => $server["server_motd_preview"],
+                "server_motd_content" => $server["server_motd_content"],
+                "custom_password" => $server["custom_password"],
+                "ttl" => $server["ttl"],
+                "authorization_thing" => $server["authorization_thing"],
+                "virtual_version" => $server["virtual_version"],
+            ];
         }
     }
 
@@ -149,25 +146,76 @@ $router->post('/universes/validate-place-join', function()
     die('true');
 });
 
-$router->get('/v1.1/avatar-fetch/', function() 
+$router->get('/asset/bodycolors.ashx', function() 
+{
+    if (!isset($_GET['colors']))
+        die();
+
+    if (!isJson(urldecode($_GET['colors'])))
+        die();
+
+    $colors = json_decode(urldecode($_GET['colors']));
+    die('<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+            <External>null</External>
+            <External>nil</External>
+            <Item class="BodyColors">
+                <Properties>
+                    <int name="HeadColor">' . (int)$colors[0]->brickColor . '</int>
+                    <int name="LeftArmColor">' . (int)$colors[2]->brickColor . '</int>
+                    <int name="LeftLegColor">' . (int)$colors[4]->brickColor . '</int>
+                    <string name="Name">Body Colors</string>
+                    <int name="RightArmColor">' . (int)$colors[3]->brickColor . '</int>
+                    <int name="RightLegColor">' . (int)$colors[5]->brickColor . '</int>
+                    <int name="TorsoColor">' . (int)$colors[1]->brickColor . '</int>
+                    <bool name="archivable">true</bool>
+                </Properties>
+            </Item>
+        </roblox>');
+});
+
+$router->all('/avatar-fetch', function() 
 {
     global $baseUrl;
     global $wearableAssets;
-    
+
+    error_log("/v1.1/avatar-fetch/");
+
+    error_log(json_encode($_GET));
+    // 
+
+    error_log("AA");
+
     if (!isset($_GET['json']))
         die();
 
+    error_log("AAA");
+
+    if (!isset($_GET['body']))
+        die();
+    error_log("AAAA");
+
+    if (!isset($_GET['userid']))
+        die();
+    error_log("AAAAA");
+
     if (!isJson(urldecode($_GET['json'])))
         die();
+    error_log("AAAAAA");
 
+    if (!isJson(urldecode($_GET['body'])))
+        die();
+        
+    $colors = json_decode(urldecode($_GET['body']));
     $json = json_decode(urldecode($_GET['json']));
-    $assets = [];
+    $assets = []; // [$baseUrl . 'asset/bodycolors.ashx?colors=' . urlencode($_GET['body'])];
 
     foreach($json as $i => $asset) {
-        if (in_array($asset->assetId, array_column($wearableAssets, 'assetId'))) {
-            array_push($assets, $baseUrl . 'asset/?id=' . $asset->assetId);
+        if (in_array($asset, array_column($wearableAssets, 'assetId'))) {
+            array_push($assets, $baseUrl . 'asset/?id=' . $asset);
         }
     }
+
+    error_log( implode(';', $assets));
 
     die(implode(';', $assets));
 });
@@ -215,7 +263,8 @@ $router->post('/announce', function()
         }
         error_log("GOOD DATA 2");
 
-        $aserv->machine_address = $_SERVER['REMOTE_ADDR'];
+        if($aserv->machine_address == "")
+            $aserv->machine_address = $_SERVER['REMOTE_ADDR'];
 
         $active_servers[$_SERVER['REMOTE_ADDR']] = $aserv;
 
@@ -223,7 +272,7 @@ $router->post('/announce', function()
         $result->execute([$aserv->machine_address]);
         
         if ($result->fetchColumn() == 0) {
-            $stmt = $connection->prepare("INSERT INTO servers (server_name, host, machine_address, player_count, player_limit, server_port, server_motd_preview, server_motd_content, custom_password, ttl, authorization_thing) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $connection->prepare("INSERT INTO servers (server_name, host, machine_address, player_count, player_limit, server_port, server_motd_preview, server_motd_content, custom_password, ttl, authorization_thing, virtual_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
                 $aserv->server_name,
                 $aserv->host,
@@ -235,14 +284,18 @@ $router->post('/announce', function()
                 $aserv->server_motd_content,
                 $aserv->custom_password,
                 $aserv->ttl,
-                $aserv->authorization
+                $aserv->authorization,
+                $aserv->virtual_version,
             ]);
             $stmt = null;
         } else {
             $newTTL = time() + (2 * 60);
-            $stmt = $connection->prepare("UPDATE servers SET ttl = ? WHERE machine_address = ?");
-            $stmt->execute([$newTTL, $aserv->machine_address]);
+            $stmt = $connection->prepare("UPDATE servers SET ttl = ?, player_count = ?, virtual_version = ?, server_motd_preview = ?, server_motd_content = ?, server_name = ? WHERE machine_address = ?");
+            $stmt->execute([$newTTL, $aserv->player_count, $aserv->virtual_version, $aserv->server_motd_preview, $aserv->server_motd_content, $aserv->server_name, $aserv->machine_address]);
             $stmt = null;
+    error_log("UPDATING DATA");
+    error_log(json_encode($aserv));
+
         }        
 
         http_response_code(200);
